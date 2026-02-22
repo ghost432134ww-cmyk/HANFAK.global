@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HNFAK GLOBAL — AI Scriptor</title>
+<!-- Bu bir HNFAK iştirakidir -->
+<style>
+/* ===== ROOT ===== */
+:root{
+  --bg:#020204; --bg2:#07070f; --bg3:#0e0e1c;
+  --violet:#8b2be2; --vg:#a855f7; --vd:#6417b8;
+  --blue:#00d4ff; --blue2:#0099bb;
+  --gold:#ffd700; --bronze:#cd7f32;
+  --silver-c:#c0c0cc;
+  --white:#f2f2fc; --sd:#6a6a82; --silver:#a0a0b8;
+  --bdr:rgba(139,43,226,.22); --bdr-b:rgba(0,212,255,.18);
+  --card:#0b0b18;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-weight:300;overflow-x:hidden;cursor:none;line-height:1.6}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:none}
+::selection{background:rgba(168,85,247,.35);color:#fff}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--vd);border-radius:2px}
+
+/* ===== CURSOR ===== */
+#cur{position:fixed;width:9px;height:9px;background:var(--vg);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s,background .2s;mix-blend-mode:screen}
+#cur-ring{position:fixed;width:33px;height:33px;border:1px solid rgba(168,85,247,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .28s,height .28s}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1001;opacity:.45}
+
+/* ===== NAVBAR ===== */
+#navbar{position:fixed;top:0;left:0;right:0;z-index:900;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:66px;background:rgba(2,2,4,.88);backdrop-filter:blur(28px) saturate(160%);border-bottom:1px solid rgba(139,43,226,.1);transition:background .3s}
+#navbar.scrolled{background:rgba(2,2,4,.97);border-bottom-color:rgba(139,43,226,.18)}
+.nav-logo{display:flex;align-items:center;gap:11px;font-size:.75rem;font-weight:800;letter-spacing:.42em;text-transform:uppercase}
+.logo-mark{width:32px;height:32px;background:linear-gradient(135deg,var(--violet),var(--blue));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:900;color:#fff;letter-spacing:0;flex-shrink:0;box-shadow:0 0 16px rgba(168,85,247,.35)}
+.nav-logo .acc{color:var(--vg)}
+.nav-center{display:flex;gap:34px}
+.nav-link{font-size:.66rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sd);transition:color .25s;position:relative;padding:4px 0}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:linear-gradient(90deg,var(--vg),var(--blue));transition:width .3s}
+.nav-link:hover,.nav-link.active{color:var(--white)}
+.nav-link:hover::after,.nav-link.active::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:14px}
+.lang-toggle{display:flex;border:1px solid rgba(139,43,226,.3);border-radius:4px;overflow:hidden}
+.lang-btn{font-size:.58rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:6px 12px;background:none;border:none;color:var(--sd);transition:all .22s}
+.lang-btn.active{background:var(--violet);color:#fff}
+.btn-auth{font-size:.62rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:9px 22px;background:transparent;border:1px solid rgba(168,85,247,.5);border-radius:4px;color:var(--vg);transition:all .3s;position:relative;overflow:hidden}
+.btn-auth::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--violet),var(--blue));opacity:0;transition:opacity .3s}
+.btn-auth:hover{color:#fff;border-color:transparent;box-shadow:0 0 28px rgba(168,85,247,.5)}
+.btn-auth:hover::before{opacity:1}
+.btn-auth span{position:relative;z-index:1}
+.btn-auth .pulse{position:absolute;top:6px;right:8px;width:6px;height:6px;background:var(--blue);border-radius:50%;animation:blink 1.8s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 6px var(--blue)}50%{opacity:.3;box-shadow:none}}
+
+/* ===== HERO ===== */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 40px 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(139,43,226,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(139,43,226,.055) 1px,transparent 1px);background-size:64px 64px;animation:gDrift 22s linear infinite}
+@keyframes gDrift{0%{transform:translateY(0)}100%{transform:translateY(64px)}}
+.hero-glow-center{position:absolute;top:50%;left:50%;width:800px;height:800px;transform:translate(-50%,-50%);background:radial-gradient(ellipse at center,rgba(139,43,226,.14) 0%,rgba(0,212,255,.04) 40%,transparent 70%);pointer-events:none;animation:gPulse 7s ease-in-out infinite}
+@keyframes gPulse{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
+.hero-scan{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.5),transparent);animation:scan 9s linear infinite;pointer-events:none;z-index:3}
+@keyframes scan{0%{top:-2px}100%{top:100%}}
+.hero-eyebrow{font-size:.64rem;font-weight:600;letter-spacing:.5em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(0,212,255,.25);padding:7px 22px;border-radius:50px;display:inline-block;margin-bottom:44px;position:relative;z-index:2;opacity:0;animation:fUp .8s ease forwards .3s;background:rgba(0,212,255,.04)}
+.hero-title{font-size:clamp(4rem,11vw,10.5rem);font-weight:800;line-height:.9;letter-spacing:-.03em;position:relative;z-index:2;opacity:0;animation:fUp .9s ease forwards .5s;margin-bottom:4px}
+.hero-title .ln1{display:block;color:var(--white)}
+.hero-title .ln2{display:block;font-size:clamp(3.5rem,9.5vw,9rem);background:linear-gradient(135deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-tagline{margin-top:28px;font-size:clamp(.85rem,1.8vw,1.05rem);letter-spacing:.28em;text-transform:uppercase;color:var(--silver);position:relative;z-index:2;opacity:0;animation:fUp .9s ease forwards .7s}
+.hero-tagline em{color:var(--vg);font-style:normal}
+.hero-sub{margin-top:10px;font-size:.9rem;color:var(--sd);letter-spacing:.06em;position:relative;z-index:2;opacity:0;animation:fUp .9s ease forwards .85s}
+.hero-cta{margin-top:52px;display:flex;gap:16px;position:relative;z-index:2;opacity:0;animation:fUp .9s ease forwards 1.05s;flex-wrap:wrap;justify-content:center}
+@keyframes fUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.btn-start{font-size:.74rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;padding:18px 52px;background:linear-gradient(135deg,var(--violet),var(--vg));color:#fff;border:none;border-radius:3px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 0 0 rgba(168,85,247,0)}
+.btn-start::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .3s}
+.btn-start:hover{box-shadow:0 0 50px rgba(168,85,247,.5);transform:translateY(-2px)}
+.btn-start:hover::after{opacity:1}
+.btn-outline{font-size:.74rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;padding:18px 52px;background:transparent;color:var(--silver-c);border:1px solid rgba(192,192,200,.22);border-radius:3px;transition:all .3s}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+
+/* STATS */
+.stats-bar{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:28px 0;display:flex;justify-content:center;gap:0}
+.stat{text-align:center;padding:0 56px;border-right:1px solid rgba(139,43,226,.1)}
+.stat:last-child{border-right:none}
+.stat-n{font-size:2.1rem;font-weight:800;background:linear-gradient(135deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;line-height:1}
+.stat-l{font-size:.58rem;font-weight:600;letter-spacing:.25em;color:var(--sd);text-transform:uppercase;margin-top:5px;display:block}
+
+/* ===== SECTION COMMONS ===== */
+.section{padding:130px 60px;max-width:1320px;margin:0 auto}
+.sec-eyebrow{font-size:.62rem;font-weight:600;letter-spacing:.45em;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.sec-eyebrow::before{content:'';display:inline-block;width:26px;height:1px;background:linear-gradient(90deg,var(--blue),var(--vg))}
+.sec-h{font-size:clamp(1.9rem,4vw,3.3rem);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:70px;max-width:580px}
+.sec-h em{font-style:normal;background:linear-gradient(135deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .75s ease,transform .75s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* ===== SERVICES ===== */
+#services{background:var(--bg)}
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(139,43,226,.1)}
+.srv-card{background:var(--card);padding:52px 40px;transition:background .35s;position:relative;overflow:hidden}
+.srv-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--vg),transparent);transform:scaleX(0);transition:transform .5s}
+.srv-card:hover{background:#0f0f22}
+.srv-card:hover::before{transform:scaleX(1)}
+.srv-icon{font-size:2rem;margin-bottom:28px;display:block}
+.srv-num{font-size:.58rem;font-weight:600;letter-spacing:.3em;color:var(--vg);margin-bottom:20px;display:block;font-family:monospace}
+.srv-title{font-size:1.3rem;font-weight:700;line-height:1.2;margin-bottom:14px}
+.srv-desc{font-size:.88rem;line-height:1.75;color:var(--sd)}
+.srv-link{display:inline-flex;align-items:center;gap:8px;margin-top:28px;font-size:.64rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--vg);transition:gap .3s}
+.srv-card:hover .srv-link{gap:16px}
+
+/* ===== AI SCRIPTOR DEMO ===== */
+#ai-scriptor{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.ai-demo-box{max-width:760px;margin:0 auto}
+.api-key-row{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding:16px 20px;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);border-radius:4px}
+.api-key-row label{font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);white-space:nowrap;flex-shrink:0}
+.api-key-input{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-size:.88rem;font-family:monospace;letter-spacing:.05em}
+.api-key-input::placeholder{color:rgba(122,122,138,.45)}
+.api-key-badge{font-size:.56rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:4px 10px;background:rgba(0,212,255,.12);color:var(--blue);border:1px solid rgba(0,212,255,.25);border-radius:50px;flex-shrink:0}
+.ai-input-row{display:flex;gap:12px;margin-bottom:24px}
+.ai-input{flex:1;background:rgba(139,43,226,.06);border:1px solid var(--bdr);border-radius:3px;padding:16px 20px;color:var(--white);font-size:.96rem;outline:none;transition:border-color .3s,background .3s}
+.ai-input:focus{border-color:var(--vg);background:rgba(139,43,226,.1)}
+.ai-input::placeholder{color:rgba(106,106,130,.55)}
+.btn-generate{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:16px 36px;background:linear-gradient(135deg,var(--violet),var(--blue2));color:#fff;border:none;border-radius:3px;white-space:nowrap;transition:all .3s;box-shadow:0 4px 24px rgba(139,43,226,.25)}
+.btn-generate:hover{box-shadow:0 8px 40px rgba(139,43,226,.45);transform:translateY(-1px)}
+.btn-generate:disabled{opacity:.5;transform:none;box-shadow:none}
+
+/* Progress bar */
+.ai-progress{display:none;margin-bottom:24px}
+.ai-progress-label{font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.ai-progress-label::before{content:'';width:7px;height:7px;background:var(--blue);border-radius:50%;animation:blink 1s ease-in-out infinite}
+.prog-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--vd),var(--vg),var(--blue));border-radius:2px;transition:width .1s linear}
+
+/* Result box */
+.ai-result{display:none;padding:32px 36px;background:rgba(139,43,226,.07);border:1px solid var(--bdr);border-radius:4px;position:relative;overflow:hidden}
+.ai-result::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--vd),var(--vg),var(--blue))}
+.ai-result-label{font-size:.58rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--vg);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.ai-result-label::after{content:'AI ÜRETILDI';font-size:.5rem;padding:3px 8px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);border-radius:50px}
+.ai-result-text{font-size:.96rem;line-height:1.8;color:var(--white);white-space:pre-wrap;font-weight:300}
+.ai-visual{margin-top:28px;background:linear-gradient(135deg,rgba(139,43,226,.12),rgba(0,212,255,.08));border:1px solid var(--bdr);border-radius:4px;height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;overflow:hidden;position:relative}
+.ai-visual::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(139,43,226,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(139,43,226,.05) 1px,transparent 1px);background-size:24px 24px}
+.ai-visual-icon{font-size:3rem;position:relative;z-index:1;filter:drop-shadow(0 0 20px rgba(168,85,247,.6))}
+.ai-visual-text{font-size:.62rem;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--sd);position:relative;z-index:1}
+.ai-visual-badge{position:relative;z-index:1;font-size:.55rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;padding:5px 14px;background:rgba(0,212,255,.12);color:var(--blue);border:1px solid rgba(0,212,255,.3);border-radius:50px}
+
+/* ===== PRICING ===== */
+#pricing{background:var(--bg)}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;max-width:1100px;margin:0 auto}
+.pc{background:var(--card);border:1px solid rgba(139,43,226,.14);padding:50px 40px 46px;position:relative;overflow:hidden;transition:transform .4s,border-color .35s}
+.pc:not(:last-child){border-right:none}
+.pc.feat{background:linear-gradient(170deg,#0f0f26 0%,#110e28 100%);border:1px solid rgba(168,85,247,.45)!important;transform:translateY(-18px) scaleX(1.01);z-index:3;box-shadow:0 0 90px rgba(139,43,226,.18)}
+.pc.feat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--vd),var(--vg),var(--blue),var(--vg),var(--vd));animation:sh 4s linear infinite;background-size:300% 100%}
+@keyframes sh{0%{background-position:-300% center}100%{background-position:300% center}}
+.pc:not(.feat):hover{transform:translateY(-6px);border-color:rgba(139,43,226,.38)!important}
+.pc-badge{display:inline-flex;align-items:center;gap:6px;font-size:.56rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;padding:6px 14px;border-radius:50px;margin-bottom:24px}
+.pb-bronze{background:rgba(205,127,50,.12);color:var(--bronze);border:1px solid rgba(205,127,50,.38)}
+.pb-silver{background:rgba(168,85,247,.14);color:var(--vg);border:1px solid rgba(168,85,247,.38)}
+.pb-gold{background:rgba(255,215,0,.1);color:var(--gold);border:1px solid rgba(255,215,0,.32)}
+.pc-name{font-size:1.5rem;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+.pc-desc{font-size:.84rem;color:var(--sd);line-height:1.6;margin-bottom:30px;min-height:48px;font-weight:300}
+.pc-amount{display:flex;align-items:flex-start;gap:3px;margin-bottom:4px}
+.pc-curr{font-size:1.05rem;font-weight:600;color:var(--sd);margin-top:8px;font-family:monospace}
+.pc-num{font-size:3.4rem;font-weight:800;line-height:1;transition:opacity .25s}
+.pc.feat .pc-num{background:linear-gradient(135deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pc-unit{font-size:.6rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--sd);margin-bottom:30px;display:block}
+.pc-div{height:1px;background:rgba(139,43,226,.14);margin-bottom:26px}
+.pc.feat .pc-div{background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent)}
+.pc-feats{list-style:none;margin-bottom:32px;display:flex;flex-direction:column;gap:12px}
+.pc-feats li{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;color:var(--silver);line-height:1.5;font-weight:300}
+.ck{flex-shrink:0;width:16px;height:16px;background:rgba(139,43,226,.14);border:1px solid rgba(139,43,226,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px;font-size:.56rem;color:var(--vg)}
+.pc.feat .ck{background:rgba(168,85,247,.18);border-color:rgba(168,85,247,.5)}
+.btn-buy{width:100%;padding:16px;border-radius:3px;font-size:.68rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;border:none;transition:all .3s}
+.bb-bronze{background:transparent;color:var(--bronze);border:1px solid rgba(205,127,50,.38)}
+.bb-bronze:hover{background:rgba(205,127,50,.1);box-shadow:0 0 28px rgba(205,127,50,.18)}
+.bb-silver{background:linear-gradient(135deg,var(--violet),var(--vg));color:#fff;box-shadow:0 6px 28px rgba(139,43,226,.3)}
+.bb-silver:hover{box-shadow:0 10px 44px rgba(168,85,247,.48);transform:translateY(-2px)}
+.bb-gold{background:transparent;color:var(--gold);border:1px solid rgba(255,215,0,.36)}
+.bb-gold:hover{background:rgba(255,215,0,.07);box-shadow:0 0 28px rgba(255,215,0,.14)}
+
+/* ===== GLOBAL MAP ===== */
+#global{padding:110px 60px;background:var(--bg2);border-top:1px solid var(--bdr)}
+.map-wrap{max-width:1100px;margin:0 auto}
+.globe-svg-wrap{margin-top:60px;position:relative;display:flex;flex-direction:column;align-items:center}
+.globe-svg{width:100%;max-width:880px}
+.cdot{animation:dp 2.5s ease-in-out infinite}
+.cdot.d2{animation-delay:.65s}.cdot.d3{animation-delay:1.3s}.cdot.d4{animation-delay:.95s}.cdot.d5{animation-delay:1.6s}.cdot.d6{animation-delay:1.95s}
+@keyframes dp{0%,100%{r:4.5;opacity:1}50%{r:8;opacity:.45}}
+.clbl{font-family:monospace;font-size:8.5px;letter-spacing:.1em}
+.conn{stroke-dasharray:3,6;animation:connAnim 4s linear infinite}
+@keyframes connAnim{0%{stroke-dashoffset:0}100%{stroke-dashoffset:-36}}
+.globe-footer{margin-top:44px;text-align:center}
+.globe-footer p{font-size:.64rem;font-weight:600;letter-spacing:.4em;text-transform:uppercase;color:var(--sd);margin-bottom:10px}
+.globe-footer strong{font-size:clamp(1.3rem,3vw,2.1rem);font-weight:800;display:block;letter-spacing:-.01em}
+.globe-footer strong em{font-style:normal;background:linear-gradient(90deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* ===== CONTACT BAR ===== */
+.contact-strip{padding:26px 60px;background:rgba(139,43,226,.05);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);display:flex;justify-content:center;gap:52px;flex-wrap:wrap;align-items:center}
+.cs-item{display:flex;align-items:center;gap:13px;transition:opacity .25s}
+.cs-item:hover{opacity:.8}
+.cs-icon{width:38px;height:38px;background:rgba(139,43,226,.12);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.cs-text p{font-size:.55rem;font-weight:600;letter-spacing:.22em;color:var(--sd);text-transform:uppercase;margin-bottom:2px}
+.cs-text a, .cs-text span{font-size:.88rem;color:var(--white);text-decoration:none;transition:color .25s}
+.cs-text a:hover{color:var(--vg)}
+
+/* ===== FOOTER ===== */
+footer{padding:48px 60px;border-top:1px solid var(--bdr)}
+.footer-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:28px;margin-bottom:36px}
+.footer-brand{font-size:.82rem;font-weight:800;letter-spacing:.38em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.footer-brand .acc{color:var(--vg)}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap;align-items:center}
+.footer-link{font-size:.58rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sd);transition:color .25s}
+.footer-link:hover{color:var(--vg)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:28px;border-top:1px solid rgba(139,43,226,.08)}
+.footer-copy{font-size:.57rem;letter-spacing:.18em;color:var(--sd);text-transform:uppercase}
+.footer-aff{font-size:.54rem;color:rgba(106,106,130,.45);text-transform:uppercase;letter-spacing:.15em}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(2,2,4,.94);backdrop-filter:blur(22px);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .38s;padding:16px}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#0b0b1a;border:1px solid rgba(139,43,226,.32);width:min(560px,96vw);max-height:92vh;overflow-y:auto;position:relative;transform:translateY(28px) scale(.97);transition:transform .38s;scrollbar-width:thin;scrollbar-color:var(--vd) transparent}
+.modal-overlay.open .modal-box{transform:translateY(0) scale(1)}
+.modal-topbar{height:2px;background:linear-gradient(90deg,var(--vd),var(--vg),var(--blue))}
+.modal-inner{padding:44px}
+.modal-close{position:absolute;top:18px;right:18px;width:32px;height:32px;background:rgba(139,43,226,.1);border:1px solid rgba(139,43,226,.2);border-radius:50%;color:var(--sd);font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .28s}
+.modal-close:hover{background:rgba(139,43,226,.28);color:var(--white)}
+.modal-chip{display:inline-flex;align-items:center;gap:7px;margin-bottom:22px;padding:6px 16px;background:rgba(139,43,226,.1);border:1px solid rgba(139,43,226,.28);border-radius:50px}
+.modal-chip span{font-size:.58rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--vg)}
+.modal-welcome{background:rgba(139,43,226,.07);border:1px solid rgba(139,43,226,.16);border-radius:3px;padding:16px 20px;margin-bottom:26px}
+.modal-welcome strong{display:block;font-size:.62rem;font-weight:700;letter-spacing:.22em;color:var(--blue);text-transform:uppercase;margin-bottom:7px}
+.modal-welcome p{font-size:.64rem;font-weight:400;letter-spacing:.08em;color:var(--sd);line-height:1.8;font-family:monospace}
+.modal-title{font-size:1.72rem;font-weight:800;margin-bottom:24px;line-height:1.1;letter-spacing:-.01em}
+.mfg{margin-bottom:17px}
+.mfg label{font-size:.58rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--sd);display:block;margin-bottom:9px}
+.minp{width:100%;background:rgba(139,43,226,.05);border:1px solid rgba(139,43,226,.18);border-radius:3px;padding:13px 16px;color:var(--white);font-size:.92rem;outline:none;transition:border-color .28s,background .28s}
+.minp::placeholder{color:rgba(106,106,130,.42)}
+.minp:focus{border-color:var(--vg);background:rgba(139,43,226,.09)}
+.msel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%238b2be2' stroke-width='1.4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-color:rgba(139,43,226,.05)}
+.privacy-wrap{display:flex;align-items:flex-start;gap:10px;padding:14px 16px;background:rgba(139,43,226,.05);border:1px solid rgba(139,43,226,.14);border-radius:3px;margin:20px 0}
+.privacy-wrap .pi{font-size:1rem;flex-shrink:0;margin-top:1px}
+.privacy-wrap .pt strong{display:block;font-size:.58rem;font-weight:700;letter-spacing:.22em;color:var(--vg);text-transform:uppercase;margin-bottom:6px}
+.privacy-wrap .pt p{font-size:.6rem;letter-spacing:.07em;color:var(--sd);line-height:1.75;font-family:monospace}
+.btn-submit{width:100%;padding:18px;background:linear-gradient(135deg,var(--violet),var(--blue2));border:none;border-radius:3px;color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase;transition:all .3s;box-shadow:0 6px 28px rgba(139,43,226,.28)}
+.btn-submit:hover{box-shadow:0 10px 44px rgba(168,85,247,.42);transform:translateY(-2px)}
+.btn-submit:disabled{opacity:.5;transform:none;box-shadow:none}
+/* Submit states */
+.submit-encrypting{display:none;text-align:center;padding:28px 0}
+.enc-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin:16px 0;overflow:hidden}
+.enc-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--vd),var(--vg),var(--blue));animation:encAnim 1.4s ease forwards 0.2s}
+@keyframes encAnim{0%{width:0%}100%{width:100%}}
+.enc-text{font-size:.64rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--blue);display:flex;align-items:center;justify-content:center;gap:8px}
+.enc-text::before{content:'';width:7px;height:7px;background:var(--blue);border-radius:50%;animation:blink 1s ease-in-out infinite}
+.modal-success{display:none;text-align:center;padding:40px 0}
+.si{width:68px;height:68px;background:rgba(139,43,226,.1);border:2px solid var(--vg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 20px;animation:popIn .45s cubic-bezier(.175,.885,.32,1.275) forwards}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-success h3{font-size:1.65rem;font-weight:800;margin-bottom:10px;background:linear-gradient(135deg,var(--vg),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-success p{font-size:.62rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--sd);line-height:2;font-family:monospace}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:28px;right:28px;z-index:800}
+.wa-btn{width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 22px rgba(37,211,102,.4);transition:all .3s;text-decoration:none}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 8px 36px rgba(37,211,102,.5)}
+
+/* ===== LEGAL MODALS ===== */
+.legal-overlay{position:fixed;inset:0;background:rgba(2,2,4,.95);backdrop-filter:blur(22px);z-index:3000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;padding:16px}
+.legal-overlay.open{opacity:1;pointer-events:all}
+.legal-box{background:#0b0b1a;border:1px solid rgba(139,43,226,.28);width:min(640px,96vw);max-height:85vh;overflow-y:auto;position:relative;transform:scale(.97);transition:transform .3s;scrollbar-width:thin;scrollbar-color:var(--vd) transparent}
+.legal-overlay.open .legal-box{transform:scale(1)}
+.legal-inner{padding:44px}
+.legal-inner h2{font-size:1.5rem;font-weight:800;margin-bottom:8px;letter-spacing:-.01em}
+.legal-inner .ldate{font-size:.6rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--sd);margin-bottom:28px;display:block}
+.legal-inner p, .legal-inner li{font-size:.88rem;line-height:1.8;color:var(--sd);margin-bottom:12px}
+.legal-inner h3{font-size:1rem;font-weight:700;color:var(--vg);margin:20px 0 10px;letter-spacing:.05em}
+.legal-inner ul{padding-left:18px}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  #navbar{padding:0 20px}
+  .nav-center{display:none}
+  .section{padding:72px 22px}
+  #services .section{padding:72px 0}
+  .srv-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:1fr;max-width:420px}
+  .pc.feat{transform:none}
+  .pc:not(:last-child){border-right:1px solid rgba(139,43,226,.14);border-bottom:none}
+  .stats-bar{flex-wrap:wrap;gap:0}
+  .stat{padding:20px 28px;border-right:none;border-bottom:1px solid rgba(139,43,226,.08);width:50%}
+  #global{padding:72px 22px}
+  footer{padding:36px 22px}
+  .footer-top{flex-direction:column}
+  .contact-strip{padding:22px;gap:28px}
+  .modal-inner, .legal-inner{padding:28px 20px}
+  .ai-input-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- ============================================================ NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="logo-mark">HG</div>
+    HNFAK <span class="acc">GLOBAL</span>
+  </a>
+  <div class="nav-center">
+    <a href="#services" class="nav-link" id="nl-srv">Hizmetler</a>
+    <a href="#pricing" class="nav-link" id="nl-pr">Fiyatlar</a>
+    <a href="#ai-scriptor" class="nav-link" id="nl-ai">AI Scriptor</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-tr" onclick="setLang('tr')">TR</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="btn-auth" onclick="openModal('GÜMÜŞ AI — Profesyonel','gumis')">
+      <span id="auth-btn-txt">KAYDOL / GİRİŞ YAP</span>
+      <span class="pulse"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================================ HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow-center"></div>
+  <div class="hero-scan"></div>
+  <div class="hero-eyebrow" id="h-ey">EST. 2024 — AI TEKNOLOJİLERİ</div>
+  <h1 class="hero-title">
+    <span class="ln1" id="h-t1">Zihinlere Kodlanan Reklamlar</span>
+    <span class="ln2">HNFAK GLOBAL</span>
+  </h1>
+  <p class="hero-tagline" id="h-tag">Geleceği biz kodluyoruz — <em>AI Scriptor</em></p>
+  <p class="hero-sub" id="h-sub">Üretiyoruz. Kuruyoruz. Yönetiyoruz.</p>
+  <div class="hero-cta">
+    <button class="btn-start" id="h-cta1" onclick="document.getElementById('ai-scriptor').scrollIntoView({behavior:'smooth'})">SİSTEMİ BAŞLAT</button>
+    <button class="btn-outline" id="h-cta2" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">ŞİMDİ SATIN AL</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-n" data-count="350">0</span><span class="stat-l" id="sl1">Tamamlanan Proje</span></div>
+  <div class="stat"><span class="stat-n" data-count="47">0</span><span class="stat-l" id="sl2">Global Pazar</span></div>
+  <div class="stat"><span class="stat-n" data-count="12">0</span><span class="stat-l" id="sl3">Ülkede Aktif</span></div>
+  <div class="stat"><span class="stat-n" data-count="99">0</span><span class="stat-l" id="sl4">Başarı Oranı %</span></div>
+</div>
+
+<!-- ============================================================ SERVICES -->
+<div id="services" style="background:var(--bg)">
+  <div class="section">
+    <div class="sec-eyebrow" id="sv-ey">Hizmetlerimiz</div>
+    <h2 class="sec-h" id="sv-h">Yapıyoruz.<br><em>Kuruyoruz.</em><br>Yönetiyoruz.</h2>
+  </div>
+  <div class="srv-grid">
+    <div class="srv-card reveal">
+      <span class="srv-num">01 / 03</span>
+      <span class="srv-icon">⚡</span>
+      <h3 class="srv-title" id="s1t">AI Destekli İçerik Üretimi</h3>
+      <p class="srv-desc" id="s1d">Hedef kitlenizin psikolojisine göre kalibrate edilmiş, yüksek dönüşümlü reklam metinleri ve görsel setler üretiyoruz. Her kelime, her piksel sonuç odaklı. Deneme yok — direkt çalışıyoruz.</p>
+      <span class="srv-link" id="s1l">Keşfet →</span>
+    </div>
+    <div class="srv-card reveal" style="transition-delay:.12s">
+      <span class="srv-num">02 / 03</span>
+      <span class="srv-icon">📊</span>
+      <h3 class="srv-title" id="s2t">Stratejik Veri Analizi</h3>
+      <p class="srv-desc" id="s2d">Pazar trendlerini, rakip hareketlerini ve müşteri davranışlarını gerçek zamanlı analiz ediyoruz. KOBİ ve işletmeler için ölçülebilir, somut büyüme stratejileri kuruyoruz.</p>
+      <span class="srv-link" id="s2l">Keşfet →</span>
+    </div>
+    <div class="srv-card reveal" style="transition-delay:.24s">
+      <span class="srv-num">03 / 03</span>
+      <span class="srv-icon">🏛</span>
+      <h3 class="srv-title" id="s3t">Marka Dönüşümü & AI Danışmanlık</h3>
+      <p class="srv-desc" id="s3d">Markanızı sıfırdan yeniden kodluyoruz. Ekosistem mimarisi, otomasyon altyapısı ve yapay zeka entegrasyonuyla sürdürülebilir büyüme motoru inşa ediyoruz.</p>
+      <span class="srv-link" id="s3l">Keşfet →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ AI SCRIPTOR DEMO -->
+<div id="ai-scriptor" style="background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr)">
+  <div class="section">
+    <div class="sec-eyebrow" id="ai-ey">AI Scriptor — Canlı Motor</div>
+    <h2 class="sec-h" id="ai-h">Gerçek Zamanlı<br><em>Reklam Üretimi</em></h2>
+    <div class="ai-demo-box reveal">
+
+      <!-- API KEY ROW -->
+      <div class="api-key-row">
+        <label for="api-key-input">OpenAI API Key</label>
+        <input type="password" id="api-key-input" class="api-key-input" placeholder="sk-proj-••••••••••••••••••••••••••" autocomplete="off" spellcheck="false">
+        <span class="api-key-badge">🔒 Güvenli</span>
+      </div>
+
+      <!-- INPUT ROW -->
+      <div class="ai-input-row">
+        <input type="text" id="ai-prompt" class="ai-input" placeholder="Ne tür bir reklam istiyorsunuz? (Örn: Spor Ayakkabı)" autocomplete="off">
+        <button class="btn-generate" id="ai-btn" onclick="generateAd()">
+          <span id="ai-btn-txt">REKLAM OLUŞTUR</span>
+        </button>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="ai-progress" id="ai-progress">
+        <div class="ai-progress-label" id="ai-prog-lbl">AI Analiz Ediyor...</div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="ai-result" id="ai-result">
+        <div class="ai-result-label" id="ai-res-lbl">AI Scriptor Çıktısı</div>
+        <div class="ai-result-text" id="ai-result-text"></div>
+        <div class="ai-visual" id="ai-visual">
+          <span class="ai-visual-icon" id="ai-visual-icon">👟</span>
+          <span class="ai-visual-text" id="ai-visual-text">HNFAK AI — GÖRSEL PLACEHOLDER</span>
+          <span class="ai-visual-badge">AI GENERATED VISUAL</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ PRICING -->
+<div id="pricing" style="background:var(--bg)">
+  <div class="section" style="max-width:1320px">
+    <div class="sec-eyebrow reveal" id="pr-ey">Fiyatlandırma</div>
+    <h2 class="sec-h reveal" id="pr-h">Paketinizi <em>Seçin</em></h2>
+    <div class="price-grid">
+
+      <!-- BRONZ -->
+      <div class="pc reveal" style="transition-delay:.05s">
+        <div class="pc-badge pb-bronze">◆ BRONZ AI</div>
+        <p class="pc-name" id="pn1">Başlangıç</p>
+        <p class="pc-desc" id="pd1">Tek Seferlik Viral Reklam Senaryosu ve Görsel Seti</p>
+        <div class="pc-amount"><span class="pc-curr" id="c1">₺</span><span class="pc-num" id="p1">2.500</span></div>
+        <span class="pc-unit" id="u1">Tek Seferlik</span>
+        <div class="pc-div"></div>
+        <ul class="pc-feats">
+          <li><span class="ck">✓</span><span id="f1a">1 Viral reklam senaryosu (AI destekli)</span></li>
+          <li><span class="ck">✓</span><span id="f1b">Tam görsel set (banner, story, reels)</span></li>
+          <li><span class="ck">✓</span><span id="f1c">Hedef kitle & mesaj analizi</span></li>
+          <li><span class="ck">✓</span><span id="f1d">3 günde teslimat</span></li>
+          <li><span class="ck">✓</span><span id="f1e">1 revizyon hakkı</span></li>
+        </ul>
+        <button class="btn-buy bb-bronze" onclick="openModal('BRONZ AI — Başlangıç','bronz')"><span id="bb1">SATIN AL →</span></button>
+      </div>
+
+      <!-- GÜMÜŞ FEATURED -->
+      <div class="pc feat reveal" style="transition-delay:.15s">
+        <div class="pc-badge pb-silver" id="fbadge">★ EN POPÜLER</div>
+        <p class="pc-name" id="pn2">Profesyonel</p>
+        <p class="pc-desc" id="pd2">1 Aylık Yapay Zeka Destekli Sosyal Medya Yönetimi</p>
+        <div class="pc-amount"><span class="pc-curr" id="c2">₺</span><span class="pc-num" id="p2">7.500</span></div>
+        <span class="pc-unit" id="u2">/ ay</span>
+        <div class="pc-div"></div>
+        <ul class="pc-feats">
+          <li><span class="ck">✓</span><span id="f2a">30 gün tam sosyal medya yönetimi</span></li>
+          <li><span class="ck">✓</span><span id="f2b">Günlük AI içerik üretimi & yayını</span></li>
+          <li><span class="ck">✓</span><span id="f2c">3 platform (IG / TT / LinkedIn)</span></li>
+          <li><span class="ck">✓</span><span id="f2d">Haftalık performans raporu</span></li>
+          <li><span class="ck">✓</span><span id="f2e">Reklam bütçesi optimizasyonu</span></li>
+          <li><span class="ck">✓</span><span id="f2f">Öncelikli destek hattı</span></li>
+        </ul>
+        <button class="btn-buy bb-silver" onclick="openModal('GÜMÜŞ AI — Profesyonel','gumis')"><span id="bb2">SİSTEMİ BAŞLAT →</span></button>
+      </div>
+
+      <!-- ALTIN -->
+      <div class="pc reveal" style="transition-delay:.25s">
+        <div class="pc-badge pb-gold">👑 ALTIN HNFAK</div>
+        <p class="pc-name" id="pn3">İmparatorluk</p>
+        <p class="pc-desc" id="pd3">Tam Kapsamlı Marka Dönüşümü & AI Scriptor Stratejik Danışmanlık</p>
+        <div class="pc-amount"><span class="pc-curr" id="c3">₺</span><span class="pc-num" id="p3">20.000</span></div>
+        <span class="pc-unit" id="u3">/ ay · vergiler dahil</span>
+        <div class="pc-div"></div>
+        <ul class="pc-feats">
+          <li><span class="ck">✓</span><span id="f3a">Tam marka kimliği yeniden kodlama</span></li>
+          <li><span class="ck">✓</span><span id="f3b">Özel AI model eğitimi & entegrasyonu</span></li>
+          <li><span class="ck">✓</span><span id="f3c">Sınırsız içerik & kampanya üretimi</span></li>
+          <li><span class="ck">✓</span><span id="f3d">C-Seviye haftalık strateji seansı</span></li>
+          <li><span class="ck">✓</span><span id="f3e">7/24 dedike hesap yöneticisi</span></li>
+          <li><span class="ck">✓</span><span id="f3f">Global pazar genişleme desteği</span></li>
+        </ul>
+        <button class="btn-buy bb-gold" onclick="openModal('ALTIN HNFAK — İmparatorluk','altin')"><span id="bb3">SİSTEMİ BAŞLAT →</span></button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ GLOBAL MAP -->
+<div id="global" style="background:var(--bg2);border-top:1px solid var(--bdr)">
+  <div class="section map-wrap" style="max-width:1100px">
+    <div class="sec-eyebrow reveal" id="gm-ey">Global Operasyon</div>
+    <h2 class="sec-h reveal" id="gm-h">İstanbul'dan<br><em>Dünyaya</em></h2>
+    <div class="globe-svg-wrap reveal">
+      <svg class="globe-svg" viewBox="0 0 900 430" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="og" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="rgba(139,43,226,0.06)"/>
+            <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <ellipse cx="450" cy="215" rx="430" ry="205" fill="url(#og)"/>
+        <!-- Latitude/longitude grid -->
+        <line x1="0" y1="215" x2="900" y2="215" stroke="rgba(139,43,226,0.07)" stroke-width="1" stroke-dasharray="3,9"/>
+        <line x1="450" y1="0" x2="450" y2="430" stroke="rgba(139,43,226,0.07)" stroke-width="1" stroke-dasharray="3,9"/>
+        <ellipse cx="450" cy="215" rx="420" ry="195" fill="none" stroke="rgba(139,43,226,0.05)" stroke-width="1"/>
+        <ellipse cx="450" cy="215" rx="290" ry="195" fill="none" stroke="rgba(139,43,226,0.04)" stroke-width="1"/>
+        <ellipse cx="450" cy="215" rx="145" ry="195" fill="none" stroke="rgba(139,43,226,0.03)" stroke-width="1"/>
+        <!-- EUROPE -->
+        <path d="M370 100 L400 90 L430 96 L452 88 L464 100 L460 120 L448 127 L432 134 L416 130 L398 135 L382 128 L368 118 Z" fill="rgba(139,43,226,0.13)" stroke="rgba(139,43,226,0.42)" stroke-width="1"/>
+        <!-- UK -->
+        <path d="M344 90 L356 84 L360 99 L350 104 Z" fill="rgba(139,43,226,0.1)" stroke="rgba(139,43,226,0.35)" stroke-width="1"/>
+        <!-- TURKEY/MIDDLE EAST -->
+        <path d="M454 128 L506 122 L528 133 L522 156 L496 162 L460 150 Z" fill="rgba(139,43,226,0.18)" stroke="rgba(168,85,247,0.55)" stroke-width="1.3"/>
+        <!-- NORTH AFRICA -->
+        <path d="M368 160 L450 154 L476 165 L470 204 L414 210 L368 198 Z" fill="rgba(139,43,226,0.08)" stroke="rgba(139,43,226,0.22)" stroke-width="1"/>
+        <!-- ASIA -->
+        <path d="M528 82 L640 72 L684 88 L690 116 L668 136 L636 142 L596 132 L556 142 L528 132 L522 106 Z" fill="rgba(139,43,226,0.09)" stroke="rgba(139,43,226,0.26)" stroke-width="1"/>
+        <!-- NORTH AMERICA -->
+        <path d="M72 84 L178 74 L206 96 L202 150 L176 164 L144 160 L104 154 L70 132 Z" fill="rgba(139,43,226,0.08)" stroke="rgba(139,43,226,0.22)" stroke-width="1"/>
+        <!-- SOUTH AMERICA -->
+        <path d="M178 214 L212 210 L222 274 L202 314 L178 310 L162 266 Z" fill="rgba(139,43,226,0.07)" stroke="rgba(139,43,226,0.18)" stroke-width="1"/>
+        <!-- SUB-SAHARAN AFRICA -->
+        <path d="M392 222 L436 218 L446 276 L422 324 L396 320 L378 264 Z" fill="rgba(139,43,226,0.07)" stroke="rgba(139,43,226,0.18)" stroke-width="1"/>
+        <!-- AUSTRALIA -->
+        <path d="M658 262 L722 256 L736 292 L712 318 L676 314 L660 286 Z" fill="rgba(139,43,226,0.07)" stroke="rgba(139,43,226,0.18)" stroke-width="1"/>
+        <!-- Connection lines -->
+        <line class="conn" x1="490" y1="140" x2="352" y2="96" stroke="rgba(168,85,247,0.22)" stroke-width="1"/>
+        <line class="conn" x1="490" y1="140" x2="140" y2="116" stroke="rgba(168,85,247,0.16)" stroke-width="1" style="animation-delay:.8s"/>
+        <line class="conn" x1="490" y1="140" x2="578" y2="110" stroke="rgba(0,212,255,0.18)" stroke-width="1" style="animation-delay:.4s"/>
+        <line class="conn" x1="490" y1="140" x2="694" y2="284" stroke="rgba(0,212,255,0.12)" stroke-width="1" style="animation-delay:1.2s"/>
+        <line class="conn" x1="352" y1="96" x2="140" y2="116" stroke="rgba(168,85,247,0.1)" stroke-width="1" style="animation-delay:1.6s"/>
+        <line class="conn" x1="578" y1="110" x2="630" y2="220" stroke="rgba(0,212,255,0.1)" stroke-width="1" style="animation-delay:2s"/>
+        <!-- ISTANBUL - HOME DOT with rings -->
+        <circle cx="490" cy="140" r="16" fill="none" stroke="rgba(168,85,247,0.15)" stroke-width="1" class="cdot" style="animation:dp 2.5s ease-in-out infinite"/>
+        <circle class="cdot" cx="490" cy="140" r="4.5" fill="#a855f7" filter="url(#glow)"/>
+        <text x="500" y="130" class="clbl" fill="#a855f7">ISTANBUL ●</text>
+        <!-- LONDON -->
+        <circle class="cdot d2" cx="352" cy="96" r="4" fill="#00d4ff" filter="url(#glow)"/>
+        <text x="320" y="89" class="clbl" fill="#00d4ff">LONDON</text>
+        <!-- NEW YORK -->
+        <circle class="cdot d3" cx="140" cy="116" r="4" fill="#00d4ff" filter="url(#glow)"/>
+        <text x="108" y="109" class="clbl" fill="#00d4ff">NEW YORK</text>
+        <!-- DUBAI -->
+        <circle class="cdot d4" cx="556" cy="152" r="4" fill="#a855f7" filter="url(#glow)"/>
+        <text x="564" y="146" class="clbl" fill="#a855f7">DUBAI</text>
+        <!-- SINGAPORE -->
+        <circle class="cdot d5" cx="630" cy="220" r="4" fill="#00d4ff" filter="url(#glow)"/>
+        <text x="638" y="215" class="clbl" fill="#00d4ff">SINGAPORE</text>
+        <!-- SYDNEY -->
+        <circle class="cdot d6" cx="694" cy="284" r="3.5" fill="#a855f7" filter="url(#glow)"/>
+        <text x="702" y="279" class="clbl" fill="#a855f7">SYDNEY</text>
+      </svg>
+      <div class="globe-footer">
+        <p id="gf-sub">Global Operasyon Ağı — 6 Şehir, 1 Vizyon</p>
+        <strong id="gf-strong">Operating Globally from <em>Istanbul to London</em></strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT STRIP -->
+<div class="contact-strip">
+  <div class="cs-item">
+    <div class="cs-icon">💬</div>
+    <div class="cs-text"><p id="ct1">WhatsApp Destek</p><a href="https://wa.me/905001234567" target="_blank">+90 500 123 45 67</a></div>
+  </div>
+  <div class="cs-item">
+    <div class="cs-icon">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="1.5" stroke="#a855f7" stroke-width="1.2"/><path d="M1 4.5L8 9.5 15 4.5" stroke="#a855f7" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </div>
+    <div class="cs-text"><p id="ct2">Global Destek</p><a href="mailto:contact@hnfak.com">contact@hnfak.com</a></div>
+  </div>
+  <div class="cs-item">
+    <div class="cs-icon">📍</div>
+    <div class="cs-text"><p id="ct3">Merkez</p><span>Istanbul, Türkiye</span></div>
+  </div>
+</div>
+
+<!-- ============================================================ FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">
+        <div class="logo-mark" style="width:28px;height:28px;font-size:.5rem">HG</div>
+        HNFAK <span class="acc">GLOBAL</span>
+      </div>
+      <p style="margin-top:12px;font-size:.78rem;color:var(--sd);max-width:320px;line-height:1.7" id="ft-desc">AI Scriptor — Yapay Zeka destekli reklam ve marka dönüşüm ajansı. İstanbul'dan dünyaya.</p>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="#" onclick="openLegal('kvkk');return false" id="fl-kvkk">KVKK</a>
+      <a class="footer-link" href="#" onclick="openLegal('terms');return false" id="fl-terms">Kullanım Şartları</a>
+      <a class="footer-link" href="#" onclick="openLegal('privacy');return false" id="fl-priv">Gizlilik Sözleşmesi</a>
+      <a class="footer-link" href="mailto:contact@hnfak.com">contact@hnfak.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy" id="ft-copy">© 2024 HNFAK Global. Tüm hakları saklıdır.</p>
+    <p class="footer-aff">Bu bir HNFAK iştirakidir — AI Scriptor Division</p>
+  </div>
+</footer>
+
+<!-- WA FLOAT -->
+<div class="wa-float">
+  <a href="https://wa.me/905001234567" class="wa-btn" target="_blank">💬</a>
+</div>
+
+<!-- ============================================================ ORDER MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <div class="modal-topbar"></div>
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal('payModal')">✕</button>
+      <div id="modal-form-content">
+        <div class="modal-chip"><span id="m-chip">GÜMÜŞ AI — PROFESYONEL</span></div>
+        <div class="modal-welcome">
+          <strong id="mw-title">HNFAK GLOBAL — AI SCRIPTOR</strong>
+          <p id="mw-body">HNFAK Global - AI Scriptor sistemine hoş geldiniz. Seçtiğiniz paketle markanızın geleceği 24 saat içinde yeniden kodlanmaya başlayacaktır.</p>
+        </div>
+        <h2 class="modal-title" id="m-title">Paket Seçimi &<br>Sipariş Formu</h2>
+        <div class="mfg">
+          <label id="ml1">Ad Soyad</label>
+          <input type="text" id="m-name" class="minp" placeholder="Ahmet Yılmaz" autocomplete="off">
+        </div>
+        <div class="mfg">
+          <label id="ml2">Telefon (WhatsApp)</label>
+          <input type="tel" id="m-phone" class="minp" placeholder="+90 5xx xxx xx xx" autocomplete="off">
+        </div>
+        <div class="mfg">
+          <label id="ml3">E-Posta</label>
+          <input type="email" id="m-email" class="minp" placeholder="siz@sirketiniz.com" autocomplete="off">
+        </div>
+        <div class="mfg">
+          <label id="ml4">Sektörünüz</label>
+          <select id="m-sector" class="minp msel">
+            <option value="" disabled selected>Sektör Seçin</option>
+            <option>E-Ticaret / Retail</option>
+            <option>Fintech / Bankacılık</option>
+            <option>Sağlık & Wellness</option>
+            <option>Gayrimenkul</option>
+            <option>Restoran & F&B</option>
+            <option>Teknoloji & SaaS</option>
+            <option>Eğitim & Kurs</option>
+            <option>Moda & Tekstil</option>
+            <option>Diğer</option>
+          </select>
+        </div>
+        <div class="privacy-wrap">
+          <div class="pi">🔒</div>
+          <div class="pt">
+            <strong id="pn-title">GİZLİLİK & KALİTE STANDARDI</strong>
+            <p id="pn-body">HNFAK Global Gizlilik ve Kalite Standartları gereği, ödemeler sadece ön görüşme sonrası kabul edilmektedir. Bilgilerinizi bırakın, 15 dakika içinde AI Scriptor uzmanımız size ulaşsın.</p>
+          </div>
+        </div>
+        <button class="btn-submit" id="submit-btn" onclick="submitLead()"><span id="ms-txt">UZMAN ARASIN — 15 DAKİKA İÇİNDE</span></button>
+      </div>
+      <!-- ENCRYPTING STATE -->
+      <div class="submit-encrypting" id="enc-state">
+        <div class="enc-text" id="enc-txt">Veriler Şifreleniyor...</div>
+        <div class="enc-bar"><div class="enc-fill"></div></div>
+        <p style="font-size:.6rem;color:var(--sd);letter-spacing:.18em;text-transform:uppercase;font-family:monospace;margin-top:8px" id="enc-sub">HNFAK Sunucularına İletiliyor...</p>
+      </div>
+      <!-- SUCCESS -->
+      <div class="modal-success" id="m-success">
+        <div class="si">✓</div>
+        <h3 id="s-title">Talebiniz Alındı!</h3>
+        <p id="s-body">🚀 YENİ MÜŞTERİ KAPIDA!<br>15 dakika içinde uzmanımız<br>WhatsApp üzerinden sizinle iletişime geçecek.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ LEGAL MODALS -->
+<div class="legal-overlay" id="kvkk-modal">
+  <div class="legal-box">
+    <div class="modal-topbar"></div>
+    <div class="legal-inner">
+      <button class="modal-close" onclick="closeModal('kvkk-modal')">✕</button>
+      <h2>KVKK Aydınlatma Metni</h2>
+      <span class="ldate">Son Güncelleme: Ocak 2024</span>
+      <h3>1. Veri Sorumlusu</h3>
+      <p>HNFAK Global AI Technologies ("Şirket"), 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusudur.</p>
+      <h3>2. İşlenen Kişisel Veriler</h3>
+      <p>Ad-soyad, telefon numarası, e-posta adresi, sektör bilgisi ve iletişim tercihleri işlenmektedir.</p>
+      <h3>3. İşleme Amaçları</h3>
+      <ul>
+        <li>Hizmet tekliflerinin iletilmesi</li>
+        <li>Müşteri ilişkileri yönetimi</li>
+        <li>Yasal yükümlülüklerin yerine getirilmesi</li>
+      </ul>
+      <h3>4. Haklarınız</h3>
+      <p>KVKK'nın 11. maddesi uyarınca; kişisel verilerinize erişim, düzeltme, silme ve işlemeye itiraz haklarına sahipsiniz. Talepleriniz için: contact@hnfak.com</p>
+    </div>
+  </div>
+</div>
+
+<div class="legal-overlay" id="terms-modal">
+  <div class="legal-box">
+    <div class="modal-topbar"></div>
+    <div class="legal-inner">
+      <button class="modal-close" onclick="closeModal('terms-modal')">✕</button>
+      <h2>Kullanım Şartları</h2>
+      <span class="ldate">Son Güncelleme: Ocak 2024</span>
+      <h3>1. Hizmet Kapsamı</h3>
+      <p>HNFAK Global, yapay zeka destekli içerik üretimi, sosyal medya yönetimi ve marka danışmanlığı hizmetleri sunmaktadır.</p>
+      <h3>2. Ödeme ve İptal</h3>
+      <p>Ödemeler ön görüşme sonrası faturalandırılır. Paket iptalleri başlangıçtan 48 saat önce yazılı bildirimle gerçekleştirilebilir.</p>
+      <h3>3. Fikri Mülkiyet</h3>
+      <p>AI Scriptor tarafından üretilen tüm içerikler, ödeme tamamlandıktan sonra müşteriye devredilir.</p>
+      <h3>4. Sorumluluk Sınırlaması</h3>
+      <p>HNFAK Global, hizmetlerin sonuçlarına ilişkin belirli başarı garantisi vermez; ancak en yüksek performans standartlarını taahhüt eder.</p>
+    </div>
+  </div>
+</div>
+
+<div class="legal-overlay" id="privacy-modal">
+  <div class="legal-box">
+    <div class="modal-topbar"></div>
+    <div class="legal-inner">
+      <button class="modal-close" onclick="closeModal('privacy-modal')">✕</button>
+      <h2>Gizlilik Sözleşmesi</h2>
+      <span class="ldate">Son Güncelleme: Ocak 2024</span>
+      <h3>1. Veri Güvenliği</h3>
+      <p>Tüm kişisel veriler 256-bit SSL şifreleme ile korunmaktadır. HNFAK sunucuları ISO 27001 sertifikalıdır.</p>
+      <h3>2. Çerez Politikası</h3>
+      <p>Sitemiz analitik ve performans çerezleri kullanmaktadır. Tarayıcı ayarlarından çerezleri yönetebilirsiniz.</p>
+      <h3>3. Üçüncü Taraf Paylaşımı</h3>
+      <p>Kişisel verileriniz, yasal zorunluluklar dışında üçüncü taraflarla paylaşılmaz.</p>
+      <h3>4. İletişim</h3>
+      <p>Gizlilik ile ilgili sorularınız için: privacy@hnfak.com</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ JAVASCRIPT -->
+<script>
+/* =========================================================
+   ⚠️  GÜVENLİK NOTU — API KEY
+   =========================================================
+   API Key'ini aşağıdaki değişkene yapıştır:
+   const OPENAI_API_KEY = 'sk-proj-SENIN_KEY_BURAYA';
+
+   ⚠️  ÖNEMLİ: Bu key frontend'de görünür olacaktır.
+   Production için backend proxy önerilir (Node.js/Express vb.)
+   Şimdilik hız için frontend üzerinde çalışmaktadır.
+   ========================================================= */
+const OPENAI_API_KEY = ''; // ← KENDİ KEY'İNİ BURAYA YAPISTIR
+
+/* ===== CURSOR ===== */
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+});
+(function animRing() {
+  rx += (mx-rx) * .1; ry += (my-ry) * .1;
+  ring.style.left = rx+'px'; ring.style.top = ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('button, a, input, select, .srv-card, .pc').forEach(el => {
+  el.addEventListener('mouseenter', () => { cur.style.width='18px'; cur.style.height='18px'; cur.style.background='var(--blue)'; ring.style.width='52px'; ring.style.height='52px'; });
+  el.addEventListener('mouseleave', () => { cur.style.width='9px'; cur.style.height='9px'; cur.style.background='var(--vg)'; ring.style.width='33px'; ring.style.height='33px'; });
+});
+
+/* ===== NAVBAR SCROLL ===== */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  // Active nav links
+  ['services','ai-scriptor','pricing','global'].forEach(id => {
+    const el = document.getElementById(id);
+    const link = document.querySelector(`a[href="#${id}"]`);
+    if (!el || !link) return;
+    const rect = el.getBoundingClientRect();
+    link.classList.toggle('active', rect.top <= 80 && rect.bottom >= 80);
+  });
+  // Parallax
+  const g = document.querySelector('.hero-glow-center');
+  if (g) g.style.transform = `translate(-50%,-50%) translateY(${window.scrollY*.25}px)`;
+});
+
+/* ===== REVEAL ===== */
+const ro = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); }), {threshold:.1});
+document.querySelectorAll('.reveal').forEach(r => ro.observe(r));
+
+/* ===== COUNTERS ===== */
+function runCounters() {
+  const suf = {350:'+', 47:'+', 12:'', 99:'%'};
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const t = +el.dataset.count;
+    let s = 0; const step = t/60;
+    const tm = setInterval(() => {
+      s += step; if(s >= t) { s = t; clearInterval(tm); }
+      el.textContent = Math.floor(s) + (s >= t ? (suf[t] ?? '+') : '');
+    }, 16);
+  });
+}
+new IntersectionObserver(e => { if(e[0].isIntersecting) { runCounters(); this.disconnect?.(); } }, {threshold:.5}).observe(document.querySelector('.stats-bar'));
+
+/* ===== LANGUAGE ===== */
+let lang = 'tr';
+const T = {
+  tr: {
+    'h-ey':'EST. 2024 — AI TEKNOLOJİLERİ', 'h-t1':'Zihinlere Kodlanan Reklamlar', 'h-tag':'Geleceği biz kodluyoruz — AI Scriptor', 'h-sub':'Üretiyoruz. Kuruyoruz. Yönetiyoruz.',
+    'h-cta1':'SİSTEMİ BAŞLAT', 'h-cta2':'ŞİMDİ SATIN AL', 'auth-btn-txt':'KAYDOL / GİRİŞ YAP',
+    'sl1':'Tamamlanan Proje', 'sl2':'Global Pazar', 'sl3':'Ülkede Aktif', 'sl4':'Başarı Oranı %',
+    'nl-srv':'Hizmetler', 'nl-pr':'Fiyatlar', 'nl-ai':'AI Scriptor',
+    'sv-ey':'Hizmetlerimiz', 'sv-h':'Yapıyoruz.<br><em>Kuruyoruz.</em><br>Yönetiyoruz.',
+    's1t':'AI Destekli İçerik Üretimi', 's1d':'Hedef kitlenizin psikolojisine göre kalibrate edilmiş, yüksek dönüşümlü reklam metinleri ve görsel setler üretiyoruz.', 's1l':'Keşfet →',
+    's2t':'Stratejik Veri Analizi', 's2d':'Pazar trendlerini, rakip hareketlerini ve müşteri davranışlarını gerçek zamanlı analiz ediyoruz. KOBİ ve işletmeler için büyüme stratejileri kuruyoruz.', 's2l':'Keşfet →',
+    's3t':'Marka Dönüşümü & AI Danışmanlık', 's3d':'Markanızı sıfırdan yeniden kodluyoruz. Yapay zeka entegrasyonuyla büyüme motoru inşa ediyoruz.', 's3l':'Keşfet →',
+    'ai-ey':'AI Scriptor — Canlı Motor', 'ai-h':'Gerçek Zamanlı<br><em>Reklam Üretimi</em>',
+    'pr-ey':'Fiyatlandırma', 'pr-h':'Paketinizi <em>Seçin</em>',
+    'pn1':'Başlangıç', 'pd1':'Tek Seferlik Viral Reklam Senaryosu ve Görsel Seti', 'c1':'₺', 'p1':'2.500', 'u1':'Tek Seferlik',
+    'f1a':'1 Viral reklam senaryosu (AI destekli)', 'f1b':'Tam görsel set (banner, story, reels)', 'f1c':'Hedef kitle & mesaj analizi', 'f1d':'3 günde teslimat', 'f1e':'1 revizyon hakkı', 'bb1':'SATIN AL →',
+    'pn2':'Profesyonel', 'pd2':'1 Aylık Yapay Zeka Destekli Sosyal Medya Yönetimi', 'c2':'₺', 'p2':'7.500', 'u2':'/ ay',
+    'fbadge':'★ EN POPÜLER',
+    'f2a':'30 gün tam sosyal medya yönetimi', 'f2b':'Günlük AI içerik üretimi & yayını', 'f2c':'3 platform (IG / TT / LinkedIn)', 'f2d':'Haftalık performans raporu', 'f2e':'Reklam bütçesi optimizasyonu', 'f2f':'Öncelikli destek hattı', 'bb2':'SİSTEMİ BAŞLAT →',
+    'pn3':'İmparatorluk', 'pd3':'Tam Kapsamlı Marka Dönüşümü & AI Scriptor Stratejik Danışmanlık', 'c3':'₺', 'p3':'20.000', 'u3':'/ ay · vergiler dahil',
+    'f3a':'Tam marka kimliği yeniden kodlama', 'f3b':'Özel AI model eğitimi', 'f3c':'Sınırsız içerik & kampanya', 'f3d':'C-Seviye haftalık strateji', 'f3e':'7/24 dedike hesap yöneticisi', 'f3f':'Global pazar genişleme', 'bb3':'SİSTEMİ BAŞLAT →',
+    'gm-ey':'Global Operasyon', 'gm-h':'İstanbul\'dan<br><em>Dünyaya</em>', 'gf-sub':'Global Operasyon Ağı — 6 Şehir, 1 Vizyon', 'gf-strong':'Operating Globally from <em>Istanbul to London</em>',
+    'ct1':'WhatsApp Destek', 'ct2':'Global Destek', 'ct3':'Merkez',
+    'ft-desc':'AI Scriptor — Yapay Zeka destekli reklam ve marka dönüşüm ajansı. İstanbul\'dan dünyaya.', 'ft-copy':'© 2024 HNFAK Global. Tüm hakları saklıdır.',
+    'fl-kvkk':'KVKK', 'fl-terms':'Kullanım Şartları', 'fl-priv':'Gizlilik Sözleşmesi',
+    'mw-title':'HNFAK GLOBAL — AI SCRIPTOR', 'mw-body':'HNFAK Global - AI Scriptor sistemine hoş geldiniz. Seçtiğiniz paketle markanızın geleceği 24 saat içinde yeniden kodlanmaya başlayacaktır.',
+    'm-title':'Paket Seçimi &<br>Sipariş Formu',
+    'ml1':'Ad Soyad', 'ml2':'Telefon (WhatsApp)', 'ml3':'E-Posta', 'ml4':'Sektörünüz',
+    'pn-title':'GİZLİLİK & KALİTE STANDARDI', 'pn-body':'HNFAK Global Gizlilik ve Kalite Standartları gereği, ödemeler sadece ön görüşme sonrası kabul edilmektedir. Bilgilerinizi bırakın, 15 dakika içinde AI Scriptor uzmanımız size ulaşsın.',
+    'ms-txt':'UZMAN ARASIN — 15 DAKİKA İÇİNDE',
+    'enc-txt':'Veriler Şifreleniyor...', 'enc-sub':'HNFAK Sunucularına İletiliyor...',
+    's-title':'Talebiniz Alındı!', 's-body':'🚀 YENİ MÜŞTERİ KAPIDA!<br>15 dakika içinde uzmanımız<br>WhatsApp üzerinden iletişime geçecek.',
+    'ai-prog-lbl':'AI Analiz Ediyor...', 'ai-res-lbl':'AI Scriptor Çıktısı', 'ai-btn-txt':'REKLAM OLUŞTUR', 'ai-visual-text':'HNFAK AI — GÖRSEL PLACEHOLDER'
+  },
+  en: {
+    'h-ey':'EST. 2024 — AI TECHNOLOGIES', 'h-t1':'Ads Coded Into Minds', 'h-tag':'We code the future — AI Scriptor', 'h-sub':'We Create. We Build. We Operate.',
+    'h-cta1':'START THE SYSTEM', 'h-cta2':'BUY NOW', 'auth-btn-txt':'SIGN UP / LOG IN',
+    'sl1':'Projects Completed', 'sl2':'Global Markets', 'sl3':'Active Countries', 'sl4':'Success Rate %',
+    'nl-srv':'Services', 'nl-pr':'Pricing', 'nl-ai':'AI Scriptor',
+    'sv-ey':'Our Services', 'sv-h':'We Create.<br><em>We Build.</em><br>We Operate.',
+    's1t':'AI-Powered Content Creation', 's1d':'High-conversion ad copy and visual sets calibrated to your audience psychology. Every word, every pixel is result-driven.', 's1l':'Explore →',
+    's2t':'Strategic Data Analytics', 's2d':'Real-time analysis of market trends, competitor movements, and customer behavior. Measurable growth strategies for SMEs and enterprises.', 's2l':'Explore →',
+    's3t':'Brand Transformation & AI Consulting', 's3d':'We recode your brand from scratch. We build a sustainable growth engine through AI integration and automation infrastructure.', 's3l':'Explore →',
+    'ai-ey':'AI Scriptor — Live Engine', 'ai-h':'Real-Time<br><em>Ad Generation</em>',
+    'pr-ey':'Pricing', 'pr-h':'Choose Your <em>Package</em>',
+    'pn1':'Starter', 'pd1':'One-Time Viral Ad Script & Visual Set', 'c1':'$', 'p1':'199', 'u1':'One-Time',
+    'f1a':'1 Viral ad script (AI-powered)', 'f1b':'Full visual set (banner, story, reels)', 'f1c':'Target audience & message analysis', 'f1d':'3-day delivery', 'f1e':'1 revision round', 'bb1':'BUY NOW →',
+    'pn2':'Professional', 'pd2':'1-Month AI-Powered Social Media Management', 'c2':'$', 'p2':'599', 'u2':'/ month',
+    'fbadge':'★ MOST POPULAR',
+    'f2a':'30-day full social media management', 'f2b':'Daily AI content creation & publishing', 'f2c':'3 platforms (IG / TT / LinkedIn)', 'f2d':'Weekly performance report', 'f2e':'Ad budget optimization', 'f2f':'Priority support line', 'bb2':'START THE SYSTEM →',
+    'pn3':'Empire', 'pd3':'Full-Scale Brand Transformation & AI Scriptor Strategic Consulting', 'c3':'$', 'p3':'1,999', 'u3':'/ month · taxes included',
+    'f3a':'Full brand identity re-coding', 'f3b':'Custom AI model training', 'f3c':'Unlimited content & campaigns', 'f3d':'C-Level weekly strategy', 'f3e':'24/7 dedicated account manager', 'f3f':'Global market expansion', 'bb3':'START THE SYSTEM →',
+    'gm-ey':'Global Operations', 'gm-h':'From Istanbul<br>to the <em>World</em>', 'gf-sub':'Global Operations Network — 6 Cities, 1 Vision', 'gf-strong':'Operating Globally from <em>Istanbul to London</em>',
+    'ct1':'WhatsApp Support', 'ct2':'Global Support', 'ct3':'Headquarters',
+    'ft-desc':'AI Scriptor — AI-powered advertising & brand transformation agency. From Istanbul to the world.', 'ft-copy':'© 2024 HNFAK Global. All rights reserved.',
+    'fl-kvkk':'GDPR', 'fl-terms':'Terms of Service', 'fl-priv':'Privacy Policy',
+    'mw-title':'HNFAK GLOBAL — AI SCRIPTOR', 'mw-body':'Welcome to HNFAK Global - AI Scriptor. With your selected package, your brand\'s future will begin to be recoded within 24 hours.',
+    'm-title':'Package Selection &<br>Order Form',
+    'ml1':'Full Name', 'ml2':'Phone (WhatsApp)', 'ml3':'Email', 'ml4':'Your Industry',
+    'pn-title':'PRIVACY & QUALITY STANDARD', 'pn-body':'In accordance with HNFAK Global Privacy and Quality Standards, payments are only accepted after a preliminary consultation. Leave your details — our AI Scriptor expert will reach you within 15 minutes.',
+    'ms-txt':'CALL ME — WITHIN 15 MINUTES',
+    'enc-txt':'Encrypting Data...', 'enc-sub':'Transmitting to HNFAK Servers...',
+    's-title':'Request Received!', 's-body':'🚀 NEW CLIENT AT THE DOOR!<br>Our AI Scriptor expert will reach you<br>via WhatsApp within 15 minutes.',
+    'ai-prog-lbl':'AI Analyzing...', 'ai-res-lbl':'AI Scriptor Output', 'ai-btn-txt':'GENERATE AD', 'ai-visual-text':'HNFAK AI — VISUAL PLACEHOLDER'
+  }
+};
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-tr').classList.toggle('active', l === 'tr');
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  const d = T[l];
+  Object.keys(d).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = d[id];
+  });
+}
+// Auto-detect
+(function() { const b = navigator.language || 'tr'; if (!b.startsWith('tr')) setLang('en'); })();
+
+/* ===== AI SCRIPTOR — OpenAI ===== */
+const adContextByProduct = {
+  'ayakkabı': { emoji: '👟', category: 'footwear' },
+  'spor': { emoji: '🏃', category: 'sports' },
+  'gıda': { emoji: '🍕', category: 'food' },
+  'teknoloji': { emoji: '💻', category: 'tech' },
+  'moda': { emoji: '👗', category: 'fashion' },
+  'default': { emoji: '✨', category: 'product' }
+};
+
+function getProductContext(prompt) {
+  const p = prompt.toLowerCase();
+  for (const [key, val] of Object.entries(adContextByProduct)) {
+    if (p.includes(key)) return val;
+  }
+  return adContextByProduct['default'];
+}
+
+async function typewriterEffect(el, text, speed = 18) {
+  el.textContent = '';
+  for (let i = 0; i < text.length; i++) {
+    el.textContent += text[i];
+    await new Promise(r => setTimeout(r, speed));
+  }
+}
+
+async function generateAd() {
+  const prompt = document.getElementById('ai-prompt').value.trim();
+  if (!prompt) {
+    document.getElementById('ai-prompt').style.borderColor = 'rgba(239,68,68,.6)';
+    setTimeout(() => document.getElementById('ai-prompt').style.borderColor = '', 2000);
+    return;
+  }
+  const btn = document.getElementById('ai-btn');
+  const prog = document.getElementById('ai-progress');
+  const result = document.getElementById('ai-result');
+  const resultText = document.getElementById('ai-result-text');
+  const progFill = document.getElementById('prog-fill');
+  const visual = document.getElementById('ai-visual');
+  const progLbl = document.getElementById('ai-prog-lbl');
+  const ctx = getProductContext(prompt);
+
+  // Show progress
+  btn.disabled = true;
+  result.style.display = 'none';
+  prog.style.display = 'block';
+  progLbl.textContent = T[lang]['ai-prog-lbl'];
+
+  // Animate progress bar
+  let pct = 0;
+  const progTimer = setInterval(() => {
+    pct += (pct < 85 ? 2 : 0.3);
+    if (pct > 95) pct = 95;
+    progFill.style.width = pct + '%';
+  }, 60);
+
+  let adText = '';
+  try {
+    const apiKey = document.getElementById('api-key-input').value.trim() || OPENAI_API_KEY;
+
+    if (!apiKey || apiKey === '') {
+      // DEMO MODE — no API key
+      await new Promise(r => setTimeout(r, 2000));
+      adText = lang === 'tr'
+        ? `🔥 ${prompt.toUpperCase()} — Sadece Bugün!\n\n"Sınırları aş. ${prompt} ile her adımda fark yarat."\n\nÖzellikler:\n✦ Ergonomik tasarım, maksimum performans\n✦ Her zemin için ultra taban teknolojisi\n✦ 3 renk seçeneği — Sınırlı stok!\n\n📲 Şimdi sipariş ver, yarın kapında.\n👉 hnfak.com/${prompt.toLowerCase().replace(/\s/g,'-')}\n\n#HNFAK #AIScriptor #${prompt.replace(/\s/g,'')} #YeniSezon`
+        : `🔥 ${prompt.toUpperCase()} — Today Only!\n\n"Break limits. Make every step count with ${prompt}."\n\nFeatures:\n✦ Ergonomic design, maximum performance\n✦ Ultra-sole technology for every surface\n✦ 3 color options — Limited stock!\n\n📲 Order now, delivered tomorrow.\n👉 hnfak.com/${prompt.toLowerCase().replace(/\s/g,'-')}\n\n#HNFAK #AIScriptor #${prompt.replace(/\s/g,'')} #NewSeason`;
+      adText += '\n\n─────────────────────\n⚡ Demo Mode — API key ekleyerek gerçek AI\'a geç!';
+    } else {
+      // REAL OpenAI API CALL
+      const systemPrompt = lang === 'tr'
+        ? `Sen HNFAK AI Scriptor'sun. Dünya standartlarında, viral, satış odaklı Türkçe reklam metinleri yazıyorsun. Her metin: dikkat çekici başlık, 3 güçlü özellik, güçlü CTA, hashtag'ler içermelidir. Kısa ve etkili yaz.`
+        : `You are HNFAK AI Scriptor. You write world-class, viral, sales-focused English ad copy. Each ad must include: attention-grabbing headline, 3 strong features, powerful CTA, relevant hashtags. Be concise and impactful.`;
+      const userPrompt = lang === 'tr'
+        ? `Şu ürün/hizmet için viral bir sosyal medya reklamı yaz: ${prompt}\nTon: güçlü, özgüvenli, genç ve enerjik. Emoji kullan. Platform: Instagram/TikTok.`
+        : `Write a viral social media ad for: ${prompt}\nTone: powerful, confident, young and energetic. Use emojis. Platform: Instagram/TikTok.`;
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          max_tokens: 512,
+          temperature: 0.85,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ]
+        })
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error?.message || 'API Error');
+      }
+      const data = await response.json();
+      adText = data.choices[0].message.content;
+    }
+  } catch (err) {
+    adText = lang === 'tr'
+      ? `⚠️ API Hatası: ${err.message}\n\nAPI key'inizi kontrol edin. Demo modu için key alanını boş bırakın.`
+      : `⚠️ API Error: ${err.message}\n\nCheck your API key. Leave the key field empty for demo mode.`;
+  }
+
+  // Complete progress
+  clearInterval(progTimer);
+  progFill.style.width = '100%';
+  await new Promise(r => setTimeout(r, 300));
+  prog.style.display = 'none';
+
+  // Show result
+  result.style.display = 'block';
+  document.getElementById('ai-res-lbl').textContent = T[lang]['ai-res-lbl'];
+  document.getElementById('ai-visual-icon').textContent = ctx.emoji;
+  document.getElementById('ai-visual-text').textContent = T[lang]['ai-visual-text'];
+  visual.style.display = 'flex';
+  btn.disabled = false;
+  // Typewriter effect
+  await typewriterEffect(resultText, adText, 16);
+}
+
+// Enter key on prompt
+document.getElementById('ai-prompt').addEventListener('keydown', e => { if(e.key === 'Enter') generateAd(); });
+
+/* ===== MODAL ===== */
+function openModal(label, key) {
+  document.getElementById('m-chip').textContent = label;
+  const d = T[lang];
+  ['mw-title','mw-body','m-title','ml1','ml2','ml3','ml4','pn-title','pn-body','ms-txt'].forEach(id => {
+    const el = document.getElementById(id); if(el && d[id]) el.innerHTML = d[id];
+  });
+  document.getElementById('modal-form-content').style.display = 'block';
+  document.getElementById('modal-form-content').style.opacity = '1';
+  document.getElementById('enc-state').style.display = 'none';
+  document.getElementById('m-success').style.display = 'none';
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+['payModal','kvkk-modal','terms-modal','privacy-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => { if(e.target.id === id) closeModal(id); });
+});
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') { ['payModal','kvkk-modal','terms-modal','privacy-modal'].forEach(closeModal); }});
+
+function openLegal(type) {
+  document.getElementById(type + '-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function submitLead() {
+  const name = document.getElementById('m-name').value.trim();
+  const phone = document.getElementById('m-phone').value.trim();
+  if (!name || !phone) {
+    [document.getElementById('m-name'), document.getElementById('m-phone')].forEach(inp => {
+      if(!inp.value.trim()) { inp.style.borderColor='rgba(239,68,68,.6)'; setTimeout(()=>inp.style.borderColor='',2200); }
+    });
+    return;
+  }
+  const plan = document.getElementById('m-chip').textContent;
+  const email = document.getElementById('m-email').value;
+  const sector = document.getElementById('m-sector').value;
+
+  // Hide form, show encrypting state
+  document.getElementById('modal-form-content').style.transition = 'opacity .28s';
+  document.getElementById('modal-form-content').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('modal-form-content').style.display = 'none';
+    const enc = document.getElementById('enc-state');
+    enc.style.display = 'block';
+    document.getElementById('enc-txt').textContent = T[lang]['enc-txt'];
+    document.getElementById('enc-sub').textContent = T[lang]['enc-sub'];
+
+    // After encryption animation (1.6s), show success + redirect to WA
+    setTimeout(() => {
+      enc.style.display = 'none';
+      document.getElementById('s-title').textContent = T[lang]['s-title'];
+      document.getElementById('s-body').innerHTML = T[lang]['s-body'];
+      const suc = document.getElementById('m-success');
+      suc.style.display = 'block';
+      // WhatsApp redirect
+      const msg = `🚨 YENİ MÜŞTERİ KAPIDA!\n\nPaket: ${plan}\nAd: ${name}\nTelefon: ${phone}\nE-Posta: ${email||'—'}\nSektör: ${sector||'—'}\n\n✅ HNFAK AI Scriptor`;
+      const waTab = window.open(`https://wa.me/905001234567?text=${encodeURIComponent(msg)}`, '_blank');
+      if (waTab) { waTab.blur(); window.focus(); }
+    }, 1800);
+  }, 300);
+}
+</script>
+</body>
+</html>
